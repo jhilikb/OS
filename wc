@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <ctype.h>
+
+int main(int argc, char *argv[])
+{
+    char buf[4096];
+    ssize_t n;
+    long lines = 0, words = 0, bytes = 0;
+    int in_word = 0;
+
+    int fd = open(argv[1], O_RDONLY);       // open() → openat()
+
+    while ((n = read(fd, buf, sizeof(buf))) > 0) { // read() → __NR_read
+
+        bytes += n;
+
+        for (int i = 0; i < n; i++) {
+            if (buf[i] == '\n')
+                lines++;
+
+            if (isspace((unsigned char)buf[i]))
+                in_word = 0;
+            else if (!in_word) {
+                words++;
+                in_word = 1;
+            }
+        }
+    }
+
+    close(fd);                              // close() → __NR_close
+
+    printf("%ld %ld %ld %s\n",
+           lines, words, bytes, argv[1]);
+
+    return 0;
+}
