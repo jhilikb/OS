@@ -1,0 +1,12 @@
+#include <stdio.h>
+#include <sys/stat.h>
+
+int main(int argc, char *argv[])
+{
+    if (mkdir(argv[1], 0755) == -1) {       // mkdir() → mkdir() syscall
+        perror("mkdir");
+        return 1;
+    }
+
+    return 0;
+}
