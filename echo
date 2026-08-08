@@ -1,0 +1,17 @@
+#include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+
+int main(int argc, char *argv[])
+{
+    for (int i = 1; i < argc; i++) {
+        write(STDOUT_FILENO, argv[i], strlen(argv[i])); // write() → __NR_write
+
+        if (i < argc - 1)
+            write(STDOUT_FILENO, " ", 1);               // write() → __NR_write
+    }
+
+    write(STDOUT_FILENO, "\n", 1);                       // write() → __NR_write
+
+    return 0;
+}
