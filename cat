@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[])
+{
+    char buf[1024];
+    int fd;
+    ssize_t n;
+
+    fd = open(argv[1], O_RDONLY);          // glibc open() → openat() syscall
+
+    while ((n = read(fd, buf, sizeof(buf))) > 0)  // read() → __NR_read
+        write(STDOUT_FILENO, buf, n);               // write() → __NR_write
+
+    close(fd);                              // close() → __NR_close
+
+    return 0;
+}
